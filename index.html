@@ -1,186 +1,192 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>麥麥商城票券使用指南</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- LIFF SDK -->
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
-    .brand-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-    .brand-btn:active { transform: scale(0.95); }
-    .fade-in { animation: fadeIn 0.4s ease-out; }
+    .brand-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+    .brand-btn:active { transform: scale(0.92); }
+    .brand-btn.active { border-color: #ef4444; background-color: #fff; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.1); }
+    .fade-in { animation: fadeIn 0.3s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
-  <script type="importmap">
-  {
-    "imports": {
-      "react": "https://esm.sh/react@19.0.0",
-      "react-dom/client": "https://esm.sh/react-dom@19.0.0/client"
-    }
-  }
-  </script>
 </head>
-<body class="antialiased">
-  <div id="root"></div>
+<body class="antialiased select-none">
+  <div class="max-w-md mx-auto min-h-screen bg-slate-50 shadow-2xl flex flex-col">
+    
+    <!-- 頁首：招呼語 -->
+    <header class="bg-gradient-to-br from-red-600 to-orange-500 text-white p-8 pt-10 pb-16 rounded-b-[3.5rem] shadow-lg relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+      <div class="relative z-10">
+        <p class="text-xs font-bold tracking-[0.2em] opacity-70 mb-2 uppercase">Mai Mai Store Guide</p>
+        <h1 class="text-xl font-medium">
+          親愛的 LINE 會員 <span id="user-name" class="font-black border-b-2 border-yellow-300 pb-0.5">○○○</span> 您好
+        </h1>
+        <h2 class="text-2xl font-black mt-4 leading-tight">請選擇您購買的商品種類</h2>
+      </div>
+    </header>
 
-  <script type="module">
-    import React, { useState, useEffect } from 'react';
-    import { createRoot } from 'react-dom/client';
-
-    const Brand = {
-      MCDONALDS: 'MCDONALDS',
-      KFC: 'KFC',
-      PIZZAHUT: 'PIZZAHUT',
-      STARBUCKS: 'STARBUCKS'
-    };
-
-    const BRAND_CONFIG = {
-      [Brand.MCDONALDS]: { name: '麥當勞', icon: '🍔', color: '#DA291C' },
-      [Brand.KFC]: { name: '肯德基', icon: '🍗', color: '#E4002B' },
-      [Brand.PIZZAHUT]: { name: '必勝客', icon: '🍕', color: '#EE3124' },
-      [Brand.STARBUCKS]: { name: '星巴克', icon: '☕', color: '#00704A' }
-    };
-
-    const App = () => {
-      const [displayName, setDisplayName] = useState('○○○');
-      const [selectedBrand, setSelectedBrand] = useState(null);
-
-      useEffect(() => {
-        const initLiff = async () => {
-          try {
-            await liff.init({ liffId: 'YOUR_LIFF_ID' }); // 請在之後替換為您的 LIFF ID
-            if (liff.isLoggedIn()) {
-              const profile = await liff.getProfile();
-              setDisplayName(profile.displayName);
-            }
-          } catch (e) {
-            console.log("LIFF Init failed, non-LINE environment.");
-          }
-        };
-        initLiff();
-      }, []);
-
-      return (
-        <div className="max-w-md mx-auto min-h-screen bg-slate-50 shadow-2xl flex flex-col">
-          {/* Header */}
-          <header className="bg-gradient-to-br from-red-600 to-orange-500 text-white p-8 pt-10 pb-16 rounded-b-[3rem] shadow-lg relative overflow-hidden">
-            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
-            <div className="relative z-10">
-              <p className="text-xs font-bold tracking-widest opacity-80 mb-2">MAI MAI MALL</p>
-              <h1 className="text-xl font-medium mb-1">親愛的 LINE 會員 <span className="font-black underline decoration-yellow-400 decoration-4 underline-offset-4">{displayName}</span> 您好</h1>
-              <h2 className="text-2xl font-black mt-4">請選擇您購買的商品種類</h2>
-            </div>
-          </header>
-
-          <main className="px-6 -mt-8 flex-grow relative z-20">
-            {/* 品牌選擇 */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {Object.keys(Brand).map((key) => {
-                const b = Brand[key];
-                const cfg = BRAND_CONFIG[b];
-                const active = selectedBrand === b;
-                return (
-                  <button 
-                    key={b}
-                    onClick={() => setSelectedBrand(b)}
-                    className={`brand-btn p-5 rounded-[2rem] bg-white border-2 flex flex-col items-center justify-center gap-2 shadow-sm ${active ? 'border-red-500 ring-4 ring-red-100' : 'border-transparent'}`}
-                  >
-                    <span className="text-4xl">{cfg.icon}</span>
-                    <span className={`text-sm font-bold ${active ? 'text-red-600' : 'text-slate-600'}`}>{cfg.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* 內容顯示 */}
-            <div className="fade-in">
-              {selectedBrand ? (
-                <div className="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6">
-                  <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-50">
-                    <span className="text-2xl">{BRAND_CONFIG[selectedBrand].icon}</span>
-                    <h3 className="text-xl font-black text-slate-800">{BRAND_CONFIG[selectedBrand].name} 使用說明</h3>
-                  </div>
-
-                  {selectedBrand === Brand.MCDONALDS && (
-                    <div className="space-y-4 text-sm text-slate-600">
-                      <p>● <span className="font-bold text-red-600">櫃檯方式：</span>告知店員欲使用電子商品卷，提供截圖掃描。</p>
-                      <p>● <span className="font-bold text-red-600">得來速方式：</span>對講機告知使用票券，下個窗口出示截圖。</p>
-                      <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
-                        <p className="font-bold text-red-700 mb-2 underline">自助點餐機流程：</p>
-                        <p>1. 點選開始 → 選擇用餐方式</p>
-                        <p>2. 左上角選「電子商品卷」→ 請掃描</p>
-                        <p>3. 打開截圖放在掃描區 → 確認餐點</p>
-                        <p className="mt-2 text-xs italic">※ 1次最多掃5張，可重複多次。</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedBrand === Brand.KFC && (
-                    <div className="space-y-4 text-sm text-slate-600">
-                      <div>
-                        <p className="font-bold text-red-800">1. 官網兌換 (推薦)：</p>
-                        <p>至官網【優惠券】區輸入序號即可。使用【預訂快取】專屬通道最快速。</p>
-                        <a href="https://www.kfcclub.com.tw/Coupon" target="_blank" className="text-blue-500 underline mt-1 block">前往肯德基官網 →</a>
-                      </div>
-                      <div>
-                        <p className="font-bold text-red-800">2. 門市兌換：</p>
-                        <p>告知櫃台人員選擇「兌換掃券」按鍵。不接受手抄或口說。自助機亦可使用。</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedBrand === Brand.PIZZAHUT && (
-                    <div className="space-y-4 text-sm text-slate-600">
-                      <p>● <span className="font-bold text-orange-600">官網/APP：</span>選單選「優惠券兌換」→「輸入電子禮券序號」(VP開頭20碼)。</p>
-                      <p>● <span className="font-bold text-orange-600">門市現場：</span>告知人員選「兌換掃券」按鍵並出示截圖。</p>
-                      <p>● <span className="font-bold text-orange-600">電話訂餐：</span>撥打 412-9889 告知使用 20 碼序號。</p>
-                    </div>
-                  )}
-
-                  {selectedBrand === Brand.STARBUCKS && (
-                    <div className="space-y-4 text-sm text-slate-600">
-                      <p>● <span className="font-bold text-green-800">櫃檯兌換：</span>告知店員使用電子商品卷，提供截圖掃描即可。</p>
-                      <p className="bg-green-50 p-3 rounded-xl text-xs text-green-700">星巴克兌換時請確認您的商品規格(冰/熱、容量)是否與券面相符。</p>
-                    </div>
-                  )}
-
-                  <a href="https://docs.google.com/spreadsheets/d/1HR_0C9BW8ib7dxPG5Iic0K31i0xKk500Dfkvbxhwq5Y/edit?gid=1812571023#gid=1812571023" target="_blank" className="mt-8 flex items-center justify-center w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg text-sm transition-all hover:bg-slate-800">
-                    📊 查看商品清單總表
-                  </a>
-                </div>
-              ) : (
-                <div className="text-center py-16 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-200 mb-8">
-                  <p className="text-slate-400 font-medium">請點擊上方品牌圖示<br/>查看詳細使用教學</p>
-                </div>
-              )}
-            </div>
-
-            {/* 注意事項 */}
-            <section className="bg-amber-50 rounded-[2.5rem] p-7 border border-amber-100 shadow-sm mb-12">
-              <h3 className="text-amber-800 font-black mb-4 flex items-center gap-2">📝 注意事項</h3>
-              <ul className="text-xs text-amber-900/80 space-y-3 pl-5 list-decimal font-medium leading-relaxed">
-                <li>請將截圖<span className="text-red-600 font-bold underline">妥善保存</span>，期限為取得後約 <span className="font-bold underline">30天內</span>，請儘速兌換。</li>
-                <li>兌換時請調高手機亮度，開啟截圖給人員掃描即可。</li>
-                <li>請在<span className="text-red-700 font-bold">效期內</span>使用完畢，逾期失效恕無法補發或退款。</li>
-                <li>每次交易可兌換 5 張，可多次使用。</li>
-                <li>序號若被鎖定，請於 <span className="font-bold">5 分鐘</span>之後再重新嘗試。</li>
-              </ul>
-            </section>
-          </main>
-
-          <footer className="text-center pb-8 opacity-30 text-[10px] tracking-widest font-bold">
-            MAI MAI STORE • TICKET GUIDE 2025
-          </footer>
+    <main class="px-6 -mt-8 flex-grow relative z-20">
+      <!-- 品牌選擇按鈕區 -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div onclick="selectBrand('mcd')" id="btn-mcd" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
+          <span class="text-4xl">🍔</span>
+          <span class="text-sm font-bold text-slate-600">麥當勞</span>
         </div>
-      );
+        <div onclick="selectBrand('kfc')" id="btn-kfc" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
+          <span class="text-4xl">🍗</span>
+          <span class="text-sm font-bold text-slate-600">肯德基</span>
+        </div>
+        <div onclick="selectBrand('pzh')" id="btn-pzh" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
+          <span class="text-4xl">🍕</span>
+          <span class="text-sm font-bold text-slate-600">必勝客</span>
+        </div>
+        <div onclick="selectBrand('sbx')" id="btn-sbx" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
+          <span class="text-4xl">☕</span>
+          <span class="text-sm font-bold text-slate-600">星巴克</span>
+        </div>
+      </div>
+
+      <!-- 動態內容區 -->
+      <div id="content-area" class="min-h-[200px]">
+        <div class="text-center py-16 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-200 mb-8">
+          <p class="text-slate-400 font-medium">點擊上方圖示<br>查看詳細兌換教學</p>
+        </div>
+      </div>
+
+      <!-- 注意事項 -->
+      <section class="bg-amber-50 rounded-[2.5rem] p-7 border border-amber-100 shadow-sm mb-12">
+        <h3 class="text-amber-800 font-black mb-4 flex items-center gap-2">
+          <span class="bg-amber-200 w-8 h-8 flex items-center justify-center rounded-full">📝</span>
+          注意事項
+        </h3>
+        <ul class="text-[13px] text-amber-900/80 space-y-4 pl-5 list-decimal font-medium leading-relaxed">
+          <li>請將截圖<span class="text-red-600 font-bold underline">保存下來</span>，期限為取得後約 <span class="font-bold underline">30天內</span> 兌換。</li>
+          <li>兌換時再開啟截圖畫面給櫃台人員或機台使用即可。</li>
+          <li>請在<span class="text-red-700 font-bold">使用期限內</span>兌換，逾期將失效恕無法補發或退款。</li>
+          <li>本憑證每次交易可兌換 5 張，可多次重複使用。</li>
+          <li>若於兌換前查詢或取消使用，序號將被鎖定 5 分鐘。</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="text-center pb-8 opacity-20 text-[10px] tracking-widest font-bold">
+      MAI MAI STORE • TICKET GUIDE 2025
+    </footer>
+  </div>
+
+  <script>
+    // 品牌資料定義
+    const brandData = {
+      mcd: {
+        title: '麥當勞 使用說明',
+        icon: '🍔',
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
+            <div class="space-y-5 text-[14px] text-slate-600">
+              <section>
+                <h4 class="font-bold text-red-600 mb-1 underline underline-offset-4">一、櫃檯/得來速方式</h4>
+                <p>告知店員欲使用電子商品卷，提供截圖掃描即可。</p>
+              </section>
+              <section class="bg-red-50 p-5 rounded-2xl border border-red-100">
+                <h4 class="font-bold text-red-700 mb-3">二、自助點餐機流程</h4>
+                <div class="space-y-2">
+                  <p>1. 點選開始 → 選擇用餐方式</p>
+                  <p>2. 左上角選「電子商品卷」</p>
+                  <p>3. 打開截圖放在掃描區感應</p>
+                  <p>4. 確認餐點 (1次最多5張)</p>
+                </div>
+              </section>
+              <a href="https://docs.google.com/spreadsheets/d/1HR_0C9BW8ib7dxPG5Iic0K31i0xKk500Dfkvbxhwq5Y/edit?gid=1812571023#gid=1812571023" target="_blank" class="block text-center py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-md">📊 查看商品清單總表</a>
+            </div>
+          </div>
+        `
+      },
+      kfc: {
+        title: '肯德基 使用說明',
+        icon: '🍗',
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
+            <div class="space-y-5 text-[14px] text-slate-600">
+              <section>
+                <h4 class="font-bold text-red-800 mb-2 underline">1. 官網兌換 (推薦)</h4>
+                <p>至肯德基官網【優惠券】區輸入序號。預訂快取專屬通道不用等。</p>
+                <a href="https://www.kfcclub.com.tw/Coupon" target="_blank" class="text-blue-500 font-bold block mt-1">→ 前往肯德基官網</a>
+              </section>
+              <section>
+                <h4 class="font-bold text-red-800 mb-2 underline">2. 門市/自助機兌換</h4>
+                <p>告知人員選擇「兌換掃券」按鍵。不接受手抄或口說序號。</p>
+              </section>
+              <a href="https://www.edenred.com.tw/index.php/store/kfc/" target="_blank" class="block text-center py-3 bg-slate-100 text-slate-500 rounded-xl text-xs">查看不適用門市清單</a>
+            </div>
+          </div>
+        `
+      },
+      pzh: {
+        title: '必勝客 使用說明',
+        icon: '🍕',
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
+            <div class="space-y-4 text-[14px] text-slate-600">
+              <p>● <span class="font-bold text-orange-600">官網/APP：</span>點選「優惠券兌換」→ 輸入 <span class="font-mono bg-slate-100 px-1">VP</span> 開頭 20 碼序號。</p>
+              <p>● <span class="font-bold text-orange-600">門市現場：</span>告知人員選「兌換掃券」按鍵並出示截圖。</p>
+              <p>● <span class="font-bold text-orange-600">電話訂餐：</span>撥打 412-9889 告知使用電子禮券並報 20 碼序號。</p>
+            </div>
+          </div>
+        `
+      },
+      sbx: {
+        title: '星巴克 使用說明',
+        icon: '☕',
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
+            <div class="space-y-4 text-[14px] text-slate-600">
+              <p>● <span class="font-bold text-green-800">櫃檯使用：</span>告知店員欲使用電子商品卷，提供截圖掃描條碼即可。</p>
+              <p class="bg-green-50 p-4 rounded-xl text-xs text-green-700 italic">※ 兌換前請確認商品內容與杯型大小是否相符。</p>
+            </div>
+          </div>
+        `
+      }
     };
 
-    const container = document.getElementById('root');
-    const root = createRoot(container);
-    root.render(<App />);
+    // 切換品牌邏輯
+    function selectBrand(id) {
+      // 更新按鈕樣式
+      document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('active', 'border-red-500', 'ring-4', 'ring-red-100'));
+      const activeBtn = document.getElementById('btn-' + id);
+      activeBtn.classList.add('active', 'border-red-500', 'ring-4', 'ring-red-100');
+
+      // 更新內容
+      const contentArea = document.getElementById('content-area');
+      contentArea.innerHTML = brandData[id].html;
+      
+      // 平滑滾動到內容區
+      window.scrollTo({ top: activeBtn.offsetTop - 20, behavior: 'smooth' });
+    }
+
+    // 初始化 LIFF
+    async function initLiff() {
+      try {
+        await liff.init({ liffId: 'YOUR_LIFF_ID' }); // 您可以將此 ID 替換為您的 LIFF ID
+        if (liff.isLoggedIn()) {
+          const profile = await liff.getProfile();
+          document.getElementById('user-name').innerText = profile.displayName;
+        }
+      } catch (e) {
+        console.log("LIFF initialization failed, maybe not in LINE browser.");
+      }
+    }
+
+    // 啟動
+    window.onload = initLiff;
   </script>
 </body>
 </html>
