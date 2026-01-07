@@ -1,384 +1,274 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>麥麥電子票券商城</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>麥麥商城票券使用說明</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --brand-red: #DA291C; --brand-dark: #27251F; --brand-yellow: #FFC72C; --line-green: #06C755; }
-        body { background-color: #f7f8fa; padding-bottom: 120px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        #static-loader { position: fixed; inset: 0; background: #fff; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
-        .spinner { width: 45px; height: 45px; border: 4px solid #f3f3f3; border-top-color: var(--brand-red); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Header */
-        .sticky-header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid #eee; }
-        
-        /* Category Tabs */
-        .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; scrollbar-width: none; }
-        .category-scroll::-webkit-scrollbar { display: none; }
-        .cat-btn { padding: 6px 18px; border-radius: 50px; font-size: 13px; font-weight: bold; white-space: nowrap; border: 1px solid #eee; background: #fff; color: #999; transition: 0.3s; }
-        .cat-btn.active { background: var(--brand-dark); color: #fff; border-color: var(--brand-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-
-        /* Product Cards */
-        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column; border: 1px solid #f0f0f0; position: relative; transition: transform 0.2s; }
-        .product-card:active { transform: scale(0.98); }
-        .product-card.sold-out { filter: grayscale(100%); opacity: 0.6; }
-        .product-card.sold-out::after { content: "SOLD OUT"; position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 900; z-index: 10; }
-        
-        .p-img-box { position: relative; width: 100%; padding-top: 100%; background: #f0f0f0; }
-        .p-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .p-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
-        .p-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; color: #222; line-height: 1.4; height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .p-info { font-size: 10px; color: #999; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .stock-tag { background: #fdf2f2; color: #d32f2f; padding: 1px 6px; border-radius: 4px; font-weight: bold; }
-        
-        .p-price { color: var(--brand-red); font-weight: 800; font-size: 19px; }
-        .p-price-old { font-size: 11px; text-decoration: line-through; color: #ccc; margin-left: 4px; }
-        
-        .btn-buy { background: var(--brand-dark); color: white; border: none; padding: 10px 0; border-radius: 50px; font-size: 13px; font-weight: bold; width: 100%; margin-top: auto; }
-        .qty-ctrl { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 50px; padding: 4px; border: 1px solid #eee; margin-top: auto; }
-        .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        /* Floating Cart Bar */
-        .cart-bar { position: fixed; bottom: 25px; left: 15px; right: 15px; background: var(--brand-red); color: white; padding: 15px 25px; border-radius: 60px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 12px 30px rgba(218, 41, 28, 0.4); z-index: 1000; cursor: pointer; transition: 0.3s; }
-        .cart-bar:active { transform: scale(0.95); }
-        .cart-qty-badge { background: white; color: var(--brand-red); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin-right: 12px; }
-
-        /* Modals */
-        .modal-content { border: none; border-radius: 30px; overflow: hidden; }
-        .gift-box { background: #fff4f4; border: 1px dashed var(--brand-red); border-radius: 15px; padding: 10px; margin-top: 15px; display: flex; align-items: center; gap: 10px; }
-        .btn-action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
-        .btn-action { border: none; border-radius: 18px; padding: 16px 8px; font-weight: bold; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; color: white; transition: 0.2s; }
-        .btn-line { background: var(--line-green); }
-        .btn-copy { background: var(--brand-dark); }
-        
-        [v-cloak] { display: none; }
+      body {
+        font-family: 'Noto Sans TC', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .brand-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .brand-card:active {
+        transform: scale(0.95);
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
-  }
-}
-</script>
-</head>
-<body>
-
-    <!-- 載入層 -->
-    <div id="static-loader">
-        <div class="spinner"></div>
-        <div class="mt-3 text-secondary small fw-bold">麥麥商城 V121 載入中</div>
-        <div id="timeout-msg" class="text-muted mt-2 small" style="display:none">伺服器響應較慢，請稍候...</div>
-    </div>
-
-    <div id="app" v-cloak>
-        <!-- Header -->
-        <div class="sticky-header">
-            <div class="p-3 d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-style: italic; font-size: 20px;">M</div>
-                    <div>
-                        <div class="fw-bold text-dark" style="font-size: 14px;">麥麥商城 <span class="badge bg-light text-muted border fw-normal" style="font-size: 9px;">{{ settings.version }}</span></div>
-                        <div class="text-muted" style="font-size: 11px;">Hi, {{ userProfile.displayName || '訪客' }}</div>
-                    </div>
-                </div>
-                <div class="text-muted"><i class="fas fa-history"></i></div>
-            </div>
-            
-            <div class="category-scroll">
-                <button 
-                    class="cat-btn" 
-                    :class="{ active: currentCat === 'ALL' }" 
-                    @click="currentCat = 'ALL'">全部</button>
-                <button 
-                    v-for="cat in categories" 
-                    :key="cat"
-                    class="cat-btn" 
-                    :class="{ active: currentCat === cat }" 
-                    @click="currentCat = cat">{{ cat }}</button>
-            </div>
-        </div>
-
-        <!-- 商品列表 -->
-        <div class="container-fluid px-2 py-3">
-            <div class="row g-2">
-                <div class="col-6 col-md-4" v-for="p in filteredProducts" :key="p.id">
-                    <div class="product-card" :class="{ 'sold-out': Number(p.stock) <= 0 }">
-                        <div class="p-img-box">
-                            <img :src="p.image || 'https://via.placeholder.com/300?text=No+Image'" class="p-img" loading="lazy">
-                        </div>
-                        <div class="p-body">
-                            <div class="p-title">{{ p.name }}</div>
-                            <div class="p-info">
-                                <span>效期: {{ p.expiryDate }}</span>
-                                <span class="stock-tag">庫存: {{ p.stock }}</span>
-                            </div>
-                            <div class="mb-2">
-                                <span class="p-price">${{ p.price }}</span>
-                                <span v-if="p.originalPrice" class="p-price-old">${{ p.originalPrice }}</span>
-                            </div>
-                            
-                            <div v-if="cart[p.id]" class="qty-ctrl">
-                                <button class="qty-btn" @click.stop="updateCart(p, -1)"><i class="fas fa-minus"></i></button>
-                                <span class="fw-bold">{{ cart[p.id] }}</span>
-                                <button class="qty-btn" @click.stop="updateCart(p, 1)"><i class="fas fa-plus"></i></button>
-                            </div>
-                            <button v-else class="btn-buy" @click.stop="updateCart(p, 1)">
-                                {{ Number(p.stock) <= 0 ? '補貨中' : '加入購物車' }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 購物車浮動條 -->
-        <div class="cart-bar" v-if="totalQty > 0" @click="openCart">
-            <div class="d-flex align-items-center">
-                <div class="cart-qty-badge">{{ totalQty }}</div>
-                <div class="fw-bold fs-5">${{ totalPrice }}</div>
-            </div>
-            <div class="fw-bold">去結帳 <i class="fas fa-chevron-right ms-2"></i></div>
-        </div>
-
-        <!-- 結帳 Modal -->
-        <div class="modal fade" id="cartModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content shadow-lg">
-                    <div class="modal-header border-0 pb-0">
-                        <h5 class="fw-bold">確認訂單內容</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <div v-for="item in cartItems" :key="item.id" class="d-flex justify-content-between py-2 border-bottom border-light">
-                                <div class="small">{{ item.name }} x {{ item.qty }}</div>
-                                <div class="fw-bold text-danger">${{ item.price * item.qty }}</div>
-                            </div>
-                        </div>
-
-                        <div v-if="activeGift" class="gift-box">
-                            <i class="fas fa-gift text-danger fs-4"></i>
-                            <div>
-                                <div class="fw-bold text-danger small">滿額贈禮</div>
-                                <div class="text-muted" style="font-size: 11px;">{{ activeGift }}</div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between fw-bold fs-5 p-3 bg-light rounded-4 mt-3">
-                            <span>應付總額</span>
-                            <span class="text-danger">${{ totalPrice }}</span>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0">
-                        <button class="btn btn-danger w-100 rounded-pill py-3 fw-bold shadow-sm" @click="handleCheckout" :disabled="isSubmitting">
-                            {{ isSubmitting ? '正在傳送中...' : '確認並送出訂單' }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 成功 Modal -->
-        <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-center p-4">
-                    <div class="mb-3 text-success"><i class="fas fa-check-circle fa-4x"></i></div>
-                    <h4 class="fw-bold">訂單已就緒</h4>
-                    <p class="text-muted small mb-4">請選取「分享好友」將文字傳送給客服。</p>
-                    
-                    <div class="p-3 bg-light rounded-4 text-start mb-4 border" style="font-size: 10px; max-height: 150px; overflow-y: auto;">
-                        <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ finalMsg }}</pre>
-                    </div>
-                    
-                    <div class="btn-action-group">
-                        <button class="btn-action btn-line" @click="shareToLine">
-                            <i class="fab fa-line fa-2x"></i>
-                            <span>傳送給客服</span>
-                        </button>
-                        <button class="btn-action btn-copy" @click="copyText">
-                            <i class="fas fa-copy fa-2x"></i>
-                            <span>{{ hasCopied ? '已複製' : '複製訂單' }}</span>
-                        </button>
-                    </div>
-                    <button class="btn btn-link text-muted mt-3 small text-decoration-none" @click="closeSuccess">回商城</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
-    <script>
-        const { createApp, ref, computed, onMounted } = Vue;
-        
-        // 核心設定：您的 GAS API 網址
-        const API_URL = 'https://script.google.com/macros/s/AKfycbx2xdqkRoBGFibvgKRo05QtVcIWZlUjBq-rr_NRJ-8nK1BsFPSorQqnsNa89IPlG45aeA/exec';
-
-        createApp({
-            setup() {
-                const products = ref([]);
-                const settings = ref({ version: 'v121', bankInfo: '' });
-                const cart = ref({});
-                const currentCat = ref('ALL');
-                const userProfile = ref({ displayName: '', userId: '' });
-                const isSubmitting = ref(false);
-                const hasCopied = ref(false);
-                const finalMsg = ref('');
-                
-                let cartModal = null;
-                let successModal = null;
-
-                const loadData = async () => {
-                    // 超時提示
-                    const timer = setTimeout(() => {
-                        const el = document.getElementById('timeout-msg');
-                        if (el) el.style.display = 'block';
-                    }, 4000);
-
-                    try {
-                        const [prodRes, settRes] = await Promise.all([
-                            fetch(`${API_URL}?action=getInitData`).then(r => r.json()),
-                            fetch(`${API_URL}?action=getSettings`).then(r => r.json())
-                        ]);
-
-                        if (prodRes.products) products.value = prodRes.products;
-                        if (settRes) settings.value = settRes;
-
-                        // 初始化 LIFF
-                        if (settRes.liffId) {
-                            await liff.init({ liffId: settRes.liffId });
-                            if (liff.isLoggedIn()) {
-                                userProfile.value = await liff.getProfile();
-                            }
-                        }
-                    } catch (e) {
-                        console.error("API Error", e);
-                    } finally {
-                        clearTimeout(timer);
-                        const loader = document.getElementById('static-loader');
-                        if (loader) {
-                            loader.style.opacity = '0';
-                            setTimeout(() => loader.style.display = 'none', 500);
-                        }
-                    }
-                };
-
-                onMounted(() => {
-                    loadData();
-                    cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
-                    successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                });
-
-                // 購物邏輯
-                const updateCart = (p, d) => {
-                    const current = cart.value[p.id] || 0;
-                    const next = current + d;
-                    if (next <= 0) {
-                        delete cart.value[p.id];
-                    } else if (next <= (p.stock || 999)) {
-                        cart.value[p.id] = next;
-                    }
-                };
-
-                const categories = computed(() => [...new Set(products.value.map(p => p.category).filter(Boolean))]);
-                const filteredProducts = computed(() => currentCat.value === 'ALL' ? products.value : products.value.filter(p => p.category === currentCat.value));
-                const cartItems = computed(() => Object.keys(cart.value).map(id => {
-                    const p = products.value.find(x => x.id === id);
-                    return p ? { ...p, qty: cart.value[id] } : null;
-                }).filter(x => x));
-                
-                const totalQty = computed(() => cartItems.value.reduce((a, b) => a + b.qty, 0));
-                const totalPrice = computed(() => cartItems.value.reduce((a, b) => a + (b.price * b.qty), 0));
-                const activeGift = computed(() => {
-                    if (totalPrice.value >= 999) return "C.3 豬肉滿福堡加蛋加中冰美式 (一組)";
-                    if (totalPrice.value >= 500) return "A.3 大蛋捲冰淇淋 或 A.7 漢堡 (二選一)";
-                    return null;
-                });
-
-                // 結帳邏輯
-                const handleCheckout = async () => {
-                    if (isSubmitting.value) return;
-                    isSubmitting.value = true;
-                    
-                    const orderId = 'M' + Date.now().toString().slice(-6);
-                    const itemsStr = cartItems.value.map((i, idx) => `${idx + 1}、${i.name} X${i.qty}`).join('\n');
-                    const timeStr = new Date().toLocaleString('zh-TW');
-
-                    let msg = `🛒 【麥麥訂單 ${orderId}】\n----------------\n${itemsStr}\n----------------\n💰 總金額: $${totalPrice.value}`;
-                    if (activeGift.value) msg += `\n🎁 滿額贈: ${activeGift.value}`;
-                    msg += `\n\n${settings.value.bankInfo || ''}`;
-                    
-                    finalMsg.value = msg;
-
-                    // 非同步紀錄到試算表
-                    try {
-                        fetch(API_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            body: JSON.stringify({
-                                timestamp: timeStr,
-                                id: orderId,
-                                itemsText: itemsStr.replace(/\n/g, ', '),
-                                totalAmount: totalPrice.value,
-                                giftText: activeGift.value || '無',
-                                userId: userProfile.value.userId,
-                                userName: userProfile.value.displayName
-                            })
-                        });
-                    } catch (e) {}
-
-                    // 如果在 LINE 內嘗試直接傳送 (需要額外權限，否則跳轉分享頁)
-                    if (liff.isInClient() && liff.isApiAvailable('shareTargetPicker')) {
-                        // 此處僅先關閉結帳視窗開啟成功視窗讓用戶手動傳送最穩
-                    }
-
-                    isSubmitting.value = false;
-                    cartModal.hide();
-                    successModal.show();
-                };
-
-                const shareToLine = () => {
-                    const url = `https://line.me/R/msg/text/?${encodeURIComponent(finalMsg.value)}`;
-                    if (liff.isInClient()) {
-                        liff.openWindow({ url, external: true });
-                    } else {
-                        window.location.href = url;
-                    }
-                };
-
-                const copyText = () => {
-                    const el = document.createElement('textarea');
-                    el.value = finalMsg.value;
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(el);
-                    hasCopied.value = true;
-                    setTimeout(() => hasCopied.value = false, 2000);
-                };
-
-                const closeSuccess = () => {
-                    successModal.hide();
-                    cart.value = {};
-                };
-
-                return {
-                    products, settings, cart, currentCat, categories, filteredProducts,
-                    updateCart, totalQty, totalPrice, cartItems, activeGift, userProfile,
-                    handleCheckout, isSubmitting, finalMsg, copyText, hasCopied,
-                    shareToLine, openCart: () => cartModal.show(), closeSuccess
-                };
-            }
-        }).mount('#app');
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.2.3",
+        "react/": "https://esm.sh/react@^19.2.3/",
+        "react-dom/client": "https://esm.sh/react-dom@^19.2.3/client"
+      }
+    }
     </script>
-</body>
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+
+    <script type="module">
+      import React, { useState, useEffect } from 'react';
+      import ReactDOM from 'react-dom/client';
+
+      // --- 定義與常數 ---
+      const Brand = {
+        MCDONALDS: 'MCDONALDS',
+        STARBUCKS: 'STARBUCKS',
+        KFC: 'KFC',
+        PIZZAHUT: 'PIZZAHUT'
+      };
+
+      const BRAND_CONFIG = {
+        [Brand.MCDONALDS]: { name: '麥當勞', icon: '🍔', color: 'bg-red-600' },
+        [Brand.STARBUCKS]: { name: '星巴克', icon: '☕', color: 'bg-green-800' },
+        [Brand.KFC]: { name: '肯德基', icon: '🍗', color: 'bg-red-700' },
+        [Brand.PIZZAHUT]: { name: '必勝客', icon: '🍕', color: 'bg-orange-600' }
+      };
+
+      const MOCK_PRODUCTS = [
+        { id: '1', name: '大麥克雙層牛肉堡', brand: Brand.MCDONALDS },
+        { id: '2', name: '10塊麥克雞塊餐', brand: Brand.MCDONALDS },
+        { id: '3', name: '那堤大杯(冰/熱)', brand: Brand.STARBUCKS },
+        { id: '4', name: '咔啦脆雞(中辣)', brand: Brand.KFC },
+        { id: '5', name: '6吋個人鬆厚比薩', brand: Brand.PIZZAHUT },
+        { id: '6', name: '薯條(大)', brand: Brand.MCDONALDS },
+        { id: '7', name: '經典美式咖啡', brand: Brand.STARBUCKS },
+        { id: '8', name: '上校雞塊(8塊)', brand: Brand.KFC },
+      ];
+
+      // --- 子組件：品牌說明內容 ---
+      const BrandInstructions = ({ brand }) => {
+        if (brand === Brand.MCDONALDS) {
+          return (
+            <div className="space-y-4 text-sm">
+              <section>
+                <h4 className="font-bold text-red-600 flex items-center">🍟 櫃台使用</h4>
+                <p className="pl-6 mt-1 text-slate-600">告知店員欲使用電子商品券，並提供<span className="font-bold text-red-500 underline">截圖</span>給店員掃描。</p>
+              </section>
+              <section>
+                <h4 className="font-bold text-red-600 flex items-center">🚗 得來速使用</h4>
+                <p className="pl-6 mt-1 text-slate-600">告知點餐對講機欲使用電子商品券，再到下一窗口掃描截圖。</p>
+              </section>
+              <section className="bg-red-50 p-4 rounded-2xl border border-red-100">
+                <h4 className="font-bold text-red-600 flex items-center">🖥️ 自助點餐機 (推薦)</h4>
+                <ul className="pl-6 mt-1 space-y-1 list-decimal text-slate-600">
+                  <li>點選開始 → 選擇用餐方式 (外帶/內用)</li>
+                  <li>左上角選「<span className="font-bold">電子商品卷</span>」</li>
+                  <li>打開截圖放在掃描區進行感應</li>
+                  <li>確認餐點（可特製去冰等）</li>
+                  <li><span className="text-red-700 font-medium">每次最多掃5張，可重複多次兌換</span></li>
+                </ul>
+              </section>
+            </div>
+          );
+        }
+        if (brand === Brand.KFC) {
+          return (
+            <div className="space-y-4 text-sm">
+              <section>
+                <h4 className="font-bold text-red-700">🌐 官網兌換 (最方便)</h4>
+                <p className="pl-4 mt-1 text-slate-600">至肯德基官網「優惠券」區輸入序號即可兌換。建議使用「預訂快取」專屬通道取餐。</p>
+                <a href="https://www.kfcclub.com.tw/Coupon" target="_blank" className="inline-block mt-2 px-3 py-1 bg-red-700 text-white text-xs rounded-full">前往官網兌換</a>
+              </section>
+              <section>
+                <h4 className="font-bold text-red-700">🏪 門市/自助機兌換</h4>
+                <p className="pl-4 mt-1 text-slate-600">告知櫃台人員選擇「兌換掃券」按鍵。不接受手抄、口說序號。<span className="text-red-600 font-bold">外送與得來速車道不適用。</span></p>
+                <a href="https://www.edenred.com.tw/index.php/store/kfc/" target="_blank" className="text-blue-500 underline text-xs block mt-1 pl-4">查看不適用門市清單</a>
+              </section>
+            </div>
+          );
+        }
+        if (brand === Brand.PIZZAHUT) {
+          return (
+            <div className="space-y-4 text-sm">
+              <section>
+                <h4 className="font-bold text-orange-600">📱 官網 / PK雙響卡 APP</h4>
+                <p className="pl-4 mt-1 text-slate-600">選單點選「優惠券兌換」→「輸入電子禮券序號」。輸入 <span className="font-mono bg-slate-100 px-1">VP</span> 開頭之 20 碼序號。</p>
+              </section>
+              <section>
+                <h4 className="font-bold text-orange-600">📞 電話訂餐 (412-9889)</h4>
+                <p className="pl-4 mt-1 text-slate-600">告知接線人員欲使用電子禮券，並提供完整 20 碼序號。取餐時請出示截圖。</p>
+              </section>
+              <section>
+                <h4 className="font-bold text-orange-600">🏪 門市現場</h4>
+                <p className="pl-4 mt-1 text-slate-600">告知人員選擇「兌換掃券」按鍵，結帳前出示截圖核銷。</p>
+              </section>
+            </div>
+          );
+        }
+        if (brand === Brand.STARBUCKS) {
+          return (
+            <div className="space-y-4 text-sm">
+              <section>
+                <h4 className="font-bold text-green-800">☕ 櫃台掃碼兌換</h4>
+                <p className="pl-4 mt-1 text-slate-600">告知店員欲使用電子商品券，開啟手機<span className="font-bold underline">截圖畫面</span>給櫃台人員掃描即可。</p>
+              </section>
+              <div className="bg-green-50 p-3 rounded-xl border border-green-100 text-xs text-green-800 italic">
+                請確保手機亮度調高，以便門市人員順利掃瞄條碼。
+              </div>
+            </div>
+          );
+        }
+        return null;
+      };
+
+      // --- 主程式組件 ---
+      const App = () => {
+        const [profile, setProfile] = useState({ displayName: 'LINE 會員' });
+        const [selectedBrand, setSelectedBrand] = useState(null);
+        const [isLiffReady, setIsLiffReady] = useState(false);
+
+        useEffect(() => {
+          const init = async () => {
+            try {
+              // 請在此填入您的 LIFF ID
+              await liff.init({ liffId: 'YOUR_LIFF_ID' });
+              if (liff.isLoggedIn()) {
+                const userProfile = await liff.getProfile();
+                setProfile(userProfile);
+              }
+              setIsLiffReady(true);
+            } catch (err) {
+              console.error('LIFF Init Error', err);
+              setIsLiffReady(true); // 即使失敗也顯示 UI
+            }
+          };
+          init();
+        }, []);
+
+        return (
+          <div className="min-h-screen max-w-md mx-auto bg-white shadow-xl flex flex-col">
+            {/* Header */}
+            <header className="bg-gradient-to-br from-red-600 to-orange-500 text-white p-8 rounded-b-[3rem] shadow-lg">
+              <div className="animate-fade-in">
+                <p className="text-sm opacity-90 mb-1">
+                  親愛的 <span className="font-bold underline text-yellow-200">{profile.displayName}</span> 您好
+                </p>
+                <h1 className="text-2xl font-black tracking-tight">請選擇購買的商品種類</h1>
+                <div className="mt-4 h-1 w-12 bg-yellow-400 rounded-full"></div>
+              </div>
+            </header>
+
+            <main className="px-6 py-8 flex-grow">
+              {/* 品牌選擇器 */}
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {Object.keys(Brand).map((key) => {
+                  const b = Brand[key];
+                  const config = BRAND_CONFIG[b];
+                  return (
+                    <button
+                      key={b}
+                      onClick={() => setSelectedBrand(b)}
+                      className={`brand-card p-5 rounded-3xl border-2 flex flex-col items-center justify-center gap-2 ${
+                        selectedBrand === b 
+                          ? 'border-red-500 bg-red-50 ring-4 ring-red-100' 
+                          : 'border-slate-100 bg-slate-50 hover:border-slate-200'
+                      }`}
+                    >
+                      <span className="text-4xl">{config.icon}</span>
+                      <span className="font-bold text-slate-700">{config.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 說明內容 */}
+              {selectedBrand ? (
+                <div className="animate-fade-in space-y-6">
+                  <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                    <h2 className="text-lg font-black mb-4 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">📖</span>
+                      {BRAND_CONFIG[selectedBrand].name} 使用說明
+                    </h2>
+                    <BrandInstructions brand={selectedBrand} />
+                  </div>
+
+                  {/* 商品參考 */}
+                  <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
+                    <h3 className="text-md font-bold mb-4 flex items-center gap-2 text-slate-500">
+                      <span className="text-lg">🛒</span> 熱門兌換商品
+                    </h3>
+                    <div className="space-y-2">
+                      {MOCK_PRODUCTS.filter(p => p.brand === selectedBrand).map(product => (
+                        <div key={product.id} className="bg-white p-3 rounded-xl text-sm font-medium border border-slate-100 flex justify-between items-center">
+                          {product.name}
+                          <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-400">電子券</span>
+                        </div>
+                      ))}
+                      <a 
+                        href="https://docs.google.com/spreadsheets/d/1HR_0C9BW8ib7dxPG5Iic0K31i0xKk500Dfkvbxhwq5Y/edit?gid=1812571023#gid=1812571023"
+                        target="_blank"
+                        className="block w-full text-center mt-4 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm"
+                      >
+                        查看完整 Google 試算表清單
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12 px-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
+                  <p className="text-slate-400 text-sm">👆 請先點選上方的品牌圖示<br/>查看詳細的兌換流程</p>
+                </div>
+              )}
+
+              {/* 注意事項 */}
+              <section className="mt-10 bg-amber-50 rounded-3xl p-6 border border-amber-100">
+                <h2 className="text-amber-800 font-bold mb-4 flex items-center gap-2">
+                  <span>⚠️</span> 注意事項
+                </h2>
+                <ul className="text-xs text-amber-900/80 space-y-3 pl-5 list-decimal font-medium">
+                  <li>請將以上<span className="text-red-600 font-bold underline">截圖保存</span>下來，期限為取得後約 <span className="text-red-600 font-bold underline">30天內</span> 兌換，請儘速兌換。</li>
+                  <li>兌換時再開啟截圖畫面給櫃台人員或機台使用即可。</li>
+                  <li>逾期將失效，<span className="text-red-600 font-bold">恕無法補發或退款</span>。</li>
+                  <li>每次交易最多可兌換 5 張，可多次重複使用。</li>
+                  <li>若序號被鎖定（查詢或取消），請於 <span className="font-bold underline">5分鐘後</span> 再次嘗試。</li>
+                </ul>
+              </section>
+            </main>
+
+            <footer className="p-8 text-center text-[10px] text-slate-300 uppercase tracking-widest">
+              Mai Mai Store Ticket Guide © 2024
+            </footer>
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
 </html>
