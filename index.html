@@ -189,7 +189,7 @@
       const contentArea = document.getElementById('content-area');
       contentArea.innerHTML = brandData[id].html;
       
-      // 平滑捲動至內容區，確保視覺焦點
+      // 平滑捲動至內容區
       window.scrollTo({ top: activeBtn.offsetTop - 20, behavior: 'smooth' });
     }
 
@@ -197,27 +197,34 @@
     async function initLiff() {
       const nameEl = document.getElementById('user-name');
       try {
-        // 使用您的 LIFF ID
+        // 初始化 LIFF
         await liff.init({ liffId: '2006813350-B66g1l4n' }); 
         
-        if (liff.isLoggedIn()) {
-          const profile = await liff.getProfile();
-          if (profile && profile.displayName) {
-            nameEl.innerText = profile.displayName;
-          } else {
-            nameEl.innerText = "LINE 會員";
-          }
-        } else {
-          // 在 LINE App 中則自動登入
+        // 檢查登入狀態
+        if (!liff.isLoggedIn()) {
           if (liff.isInClient()) {
             liff.login();
           } else {
-            // 非 LINE 瀏覽器顯示
-            nameEl.innerText = "訪客";
+            nameEl.innerText = "貴賓";
+          }
+          return;
+        }
+
+        // 已登入，讀取個人資料
+        const profile = await liff.getProfile();
+        if (profile && profile.displayName) {
+          nameEl.innerText = profile.displayName;
+        } else {
+          // 備援方案：從 ID Token 中讀取
+          const idToken = liff.getDecodedIDToken();
+          if (idToken && idToken.name) {
+            nameEl.innerText = idToken.name;
+          } else {
+            nameEl.innerText = "LINE 會員";
           }
         }
       } catch (e) {
-        console.error("LIFF Init Error:", e);
+        console.error("LIFF 讀取失敗:", e);
         nameEl.innerText = "LINE 會員";
       }
     }
