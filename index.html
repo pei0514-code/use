@@ -33,36 +33,48 @@
       <div class="relative z-10">
         <p class="text-xs font-bold tracking-[0.2em] opacity-70 mb-2 uppercase">Mai Mai Store Guide</p>
         <h1 class="text-xl font-medium">
-          親愛的 LINE 會員 <span id="user-name" class="font-black border-b-2 border-yellow-300 pb-0.5 tracking-wide">讀取中...</span> 您好
+          親愛的 LINE 會員 <span id="user-name" class="font-black border-b-2 border-yellow-300 pb-0.5 tracking-wide underline underline-offset-4">讀取中...</span> 您好
         </h1>
         <h2 class="text-2xl font-black mt-4 leading-tight">請選擇您購買的商品種類</h2>
       </div>
     </header>
 
     <main class="px-6 -mt-8 flex-grow relative z-20">
-      <!-- 品牌選擇按鈕區 -->
-      <div class="grid grid-cols-2 gap-4 mb-8">
-        <div onclick="selectBrand('mcd')" id="btn-mcd" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
-          <span class="text-4xl">🍔</span>
-          <span class="text-sm font-bold text-slate-600">麥當勞</span>
+      <!-- 品牌選擇按鈕區 - 改為 3 欄更精簡 -->
+      <div class="grid grid-cols-3 gap-3 mb-8">
+        <div onclick="selectBrand('mcd')" id="btn-mcd" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">🍔</span>
+          <span class="text-[11px] font-bold text-slate-600">麥當勞</span>
         </div>
-        <div onclick="selectBrand('kfc')" id="btn-kfc" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
-          <span class="text-4xl">🍗</span>
-          <span class="text-sm font-bold text-slate-600">肯德基</span>
+        <div onclick="selectBrand('kfc')" id="btn-kfc" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">🍗</span>
+          <span class="text-[11px] font-bold text-slate-600">肯德基</span>
         </div>
-        <div onclick="selectBrand('pzh')" id="btn-pzh" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
-          <span class="text-4xl">🍕</span>
-          <span class="text-sm font-bold text-slate-600">必勝客</span>
+        <div onclick="selectBrand('pzh')" id="btn-pzh" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">🍕</span>
+          <span class="text-[11px] font-bold text-slate-600">必勝客</span>
         </div>
-        <div onclick="selectBrand('sbx')" id="btn-sbx" class="brand-btn p-5 rounded-[2.5rem] bg-white border-2 border-transparent flex flex-col items-center justify-center gap-2 shadow-sm">
-          <span class="text-4xl">☕</span>
-          <span class="text-sm font-bold text-slate-600">星巴克</span>
+        <div onclick="selectBrand('sbx')" id="btn-sbx" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">☕</span>
+          <span class="text-[11px] font-bold text-slate-600">星巴克</span>
+        </div>
+        <div onclick="selectBrand('mos')" id="btn-mos" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">🍱</span>
+          <span class="text-[11px] font-bold text-slate-600">摩斯漢堡</span>
+        </div>
+        <div onclick="selectBrand('bk')" id="btn-bk" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">👑</span>
+          <span class="text-[11px] font-bold text-slate-600">漢堡王</span>
+        </div>
+        <div onclick="selectBrand('coco')" id="btn-coco" class="brand-btn p-4 rounded-3xl bg-white border-2 border-transparent flex flex-col items-center justify-center gap-1 shadow-sm">
+          <span class="text-3xl">🥤</span>
+          <span class="text-[11px] font-bold text-slate-600">CoCo</span>
         </div>
       </div>
 
       <!-- 動態內容區 -->
       <div id="content-area" class="min-h-[200px]">
-        <div class="text-center py-16 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-200 mb-8">
+        <div class="text-center py-12 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-200 mb-8">
           <p class="text-slate-400 font-medium text-sm">點擊上方品牌圖標<br>查看詳細使用說明</p>
         </div>
       </div>
@@ -95,24 +107,16 @@
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
             <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍔 麥當勞使用教學</h3>
-            <div class="space-y-6 text-[14px] text-slate-600">
+            <div class="space-y-5 text-[14px] text-slate-600">
               <section>
-                <h4 class="font-bold text-red-600 mb-1">一、櫃檯使用：</h4>
-                <p>告知店員欲使用電子商品券，提供截圖給店員掃描。</p>
+                <h4 class="font-bold text-red-600">● 櫃檯/得來速：</h4>
+                <p>告知店員欲使用電子券，並提供截圖掃描。</p>
               </section>
-              <section>
-                <h4 class="font-bold text-red-600 mb-1">二、得來速使用：</h4>
-                <p>告知點餐對講機欲使用電子券，再到下一窗口提供截圖掃描。</p>
+              <section class="bg-red-50 p-4 rounded-2xl border border-red-100">
+                <h4 class="font-bold text-red-700 mb-2">● 自助點餐機：</h4>
+                <p class="text-xs leading-relaxed">點選開始 → 用餐方式 → 左上角選「電子商品卷」 → 掃描截圖畫面 → 確認餐點。</p>
               </section>
-              <section class="bg-red-50 p-5 rounded-2xl border border-red-100">
-                <h4 class="font-bold text-red-700 mb-3">三、自助點餐機流程：</h4>
-                <div class="space-y-2 pl-2 border-l-2 border-red-200">
-                  <p>1. 點選開始 → 選擇用餐方式(外帶/內用)</p>
-                  <p>2. 左上角選「<span class="font-bold text-red-600">電子商品卷</span>」</p>
-                  <p>3. 請掃描電子商品卷 (打開截圖放掃描區)</p>
-                  <p>4. 確認餐點 (<span class="italic">1次最多掃5張，可重複多次</span>)</p>
-                </div>
-              </section>
+              <a href="https://www.edenred.com.tw/store/mcdonalds/" target="_blank" class="block text-center py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-500">📍 查詢不適用門市</a>
             </div>
           </div>
         `
@@ -121,22 +125,17 @@
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
             <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍗 肯德基使用教學</h3>
-            <div class="space-y-6 text-[14px] text-slate-600">
+            <div class="space-y-5 text-[14px] text-slate-600">
               <section>
-                <h4 class="font-bold text-red-800 mb-2">1. 肯德基官網兌換：</h4>
-                <p>至肯德基官網【優惠券】區輸入序號即可兌換。建議使用【預訂快取】專屬通道取餐。</p>
+                <h4 class="font-bold text-red-800 underline underline-offset-4 mb-2">官網預訂快取：</h4>
+                <p>至「優惠券」區輸入 20 碼序號兌換，取餐不用等。</p>
                 <a href="https://www.kfcclub.com.tw/Coupon" target="_blank" class="inline-block mt-2 text-blue-600 font-bold underline">→ 前往官網兌換</a>
               </section>
               <section>
-                <h4 class="font-bold text-red-800 mb-2">2. 門市兌換：</h4>
-                <p>告知人員選擇「<span class="font-bold">兌換掃券</span>」按鍵進行核銷。不接受手抄或口說序號。</p>
-                <p class="text-xs text-slate-400 mt-2 italic">※ 亦可使用自助點餐機兌換。</p>
+                <h4 class="font-bold text-red-800 underline underline-offset-4 mb-2">門市現場：</h4>
+                <p>出示截圖，請人員點選「兌換掃券」按鍵。亦可使用點餐機。</p>
               </section>
-              <section class="bg-slate-50 p-4 rounded-xl">
-                <p class="text-xs text-slate-500 font-medium leading-relaxed mb-1">⚠️ 注意事項：</p>
-                <p class="text-[11px] text-slate-400">外送服務、點餐車道不適用。部分門市不參與兌換，請參考：</p>
-                <a href="https://www.edenred.com.tw/index.php/store/kfc/" target="_blank" class="text-[11px] text-blue-500 underline">不適用門市清單</a>
-              </section>
+              <a href="https://www.edenred.com.tw/store/kfc/" target="_blank" class="block text-center py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-500">📍 查詢不適用門市</a>
             </div>
           </div>
         `
@@ -145,19 +144,16 @@
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
             <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍕 必勝客使用教學</h3>
-            <div class="space-y-6 text-[14px] text-slate-600">
+            <div class="space-y-4 text-[14px] text-slate-600">
               <section>
-                <h4 class="font-bold text-orange-600 mb-1">● 官網及APP兌換：</h4>
-                <p>官網左上角「優惠券兌換」→「輸入電子禮券序號」，輸入 <span class="font-mono bg-slate-100 px-1 border">VP</span> 開頭 20 碼英數字。</p>
+                <h4 class="font-bold text-orange-600 underline underline-offset-4 mb-2">官網兌換：</h4>
+                <p>點選「優惠券兌換」→「輸入電子禮券序號」(VP開頭20碼)。</p>
               </section>
               <section>
-                <h4 class="font-bold text-orange-600 mb-1">● 門市現場兌換：</h4>
-                <p>結帳前出示截圖，告知人員選擇「<span class="font-bold">兌換掃券</span>」按鍵核銷。不接受口說序號。</p>
+                <h4 class="font-bold text-orange-600 underline underline-offset-4 mb-2">現場/電話：</h4>
+                <p>出示截圖或撥打 412-9889 告知 20 碼序號。</p>
               </section>
-              <section>
-                <h4 class="font-bold text-orange-600 mb-1">● 電話訂餐：</h4>
-                <p>撥打 412-9889，告知使用電子禮券並報完整 <span class="font-bold underline">20 碼序號</span>。取餐時需出示截圖。</p>
-              </section>
+              <a href="https://www.edenred.com.tw/store/phtmenu/" target="_blank" class="block text-center py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-500">📍 查詢不適用門市</a>
             </div>
           </div>
         `
@@ -167,13 +163,43 @@
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
             <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">☕ 星巴克使用教學</h3>
             <div class="space-y-4 text-[14px] text-slate-600">
-              <section>
-                <h4 class="font-bold text-green-800 mb-2">櫃檯直接使用：</h4>
-                <p class="leading-relaxed">告知店員欲使用電子商品券，開啟手機截圖提供店員掃描掃碼核銷即可。</p>
-              </section>
-              <div class="bg-green-50 p-4 rounded-xl border border-green-100 mt-4">
-                <p class="text-xs text-green-700 italic leading-relaxed">※ 電子商品券目前僅限於櫃台兌換，暫無法使用在線上點餐或外送服務。</p>
-              </div>
+              <p>● 結帳前出示截圖，供櫃台店員掃描條碼即可兌換。</p>
+              <p class="text-xs text-slate-400 italic">※ 不適用於線上點餐或外送服務。</p>
+              <a href="https://www.edenred.com.tw/store/starbucks/" target="_blank" class="block text-center py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-500">📍 查詢不適用門市</a>
+            </div>
+          </div>
+        `
+      },
+      mos: {
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in border-l-8 border-green-600">
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍱 摩斯漢堡使用教學</h3>
+            <div class="space-y-4 text-[14px] text-slate-600">
+              <p>● 於全台摩斯漢堡櫃檯出示「<span class="font-bold text-green-700 underline">手機截圖</span>」給店員掃瞄即可兌換。</p>
+              <p class="text-xs text-slate-400 italic font-medium">※ 請注意螢幕亮度需足夠以便掃描。</p>
+              <a href="https://www.edenred.com.tw/store/mosburger/" target="_blank" class="block text-center py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-500">📍 查詢不適用門市</a>
+            </div>
+          </div>
+        `
+      },
+      bk: {
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in border-l-8 border-orange-800">
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">👑 漢堡王使用教學</h3>
+            <div class="space-y-4 text-[14px] text-slate-600">
+              <p>● 請於結帳前主動出示「<span class="font-bold text-orange-800 underline">電子券截圖</span>」，供櫃台人員點選「電子商品券」按鍵並掃描條碼。</p>
+              <p class="text-xs text-slate-400 italic leading-relaxed">※ 僅限櫃台兌換，不適用於外送或官網點餐。</p>
+            </div>
+          </div>
+        `
+      },
+      coco: {
+        html: `
+          <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in border-l-8 border-orange-400">
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🥤 CoCo使用教學</h3>
+            <div class="space-y-4 text-[14px] text-slate-600">
+              <p>● 至門市點餐後，出示「<span class="font-bold text-orange-500 underline">商品截圖</span>」提供給店員掃瞄核銷即可領取飲品。</p>
+              <p class="text-xs text-slate-400 italic leading-relaxed">※ 建議兌換前先確認門市是否支援電子券收受。</p>
             </div>
           </div>
         `
@@ -189,18 +215,19 @@
       const contentArea = document.getElementById('content-area');
       contentArea.innerHTML = brandData[id].html;
       
-      // 平滑捲動至內容區
       window.scrollTo({ top: activeBtn.offsetTop - 20, behavior: 'smooth' });
     }
 
-    // 初始化 LIFF 且強化姓名讀取
+    // 初始化 LIFF 且極致強化姓名讀取
     async function initLiff() {
       const nameEl = document.getElementById('user-name');
       try {
-        // 初始化 LIFF
+        // 使用您的 LIFF ID
         await liff.init({ liffId: '2006813350-B66g1l4n' }); 
         
-        // 檢查登入狀態
+        // 確保 SDK 準備就緒
+        await liff.ready;
+
         if (!liff.isLoggedIn()) {
           if (liff.isInClient()) {
             liff.login();
@@ -210,21 +237,25 @@
           return;
         }
 
-        // 已登入，讀取個人資料
+        // 讀取名稱邏輯
+        // 1. 嘗試從 getProfile
         const profile = await liff.getProfile();
         if (profile && profile.displayName) {
           nameEl.innerText = profile.displayName;
-        } else {
-          // 備援方案：從 ID Token 中讀取
-          const idToken = liff.getDecodedIDToken();
-          if (idToken && idToken.name) {
-            nameEl.innerText = idToken.name;
-          } else {
-            nameEl.innerText = "LINE 會員";
-          }
+          return;
         }
+
+        // 2. 備援：從 ID Token 讀取 (通常更即時)
+        const idToken = liff.getDecodedIDToken();
+        if (idToken && idToken.name) {
+          nameEl.innerText = idToken.name;
+          return;
+        }
+
+        nameEl.innerText = "LINE 會員";
+
       } catch (e) {
-        console.error("LIFF 讀取失敗:", e);
+        console.error("LIFF 姓名讀取失敗:", e);
         nameEl.innerText = "LINE 會員";
       }
     }
