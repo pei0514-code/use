@@ -13,10 +13,15 @@
     body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
     .brand-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
     .brand-btn:active { transform: scale(0.92); }
-    .brand-btn.active { border-color: #ef4444; background-color: #fff; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.1); }
+    .brand-btn.active { 
+      border-color: #ef4444; 
+      background-color: #fff; 
+      box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.1); 
+      ring: 4px;
+      ring-color: rgba(239, 68, 68, 0.1);
+    }
     .fade-in { animation: fadeIn 0.3s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body class="antialiased select-none">
@@ -28,7 +33,7 @@
       <div class="relative z-10">
         <p class="text-xs font-bold tracking-[0.2em] opacity-70 mb-2 uppercase">Mai Mai Store Guide</p>
         <h1 class="text-xl font-medium">
-          親愛的 LINE 會員 <span id="user-name" class="font-black border-b-2 border-yellow-300 pb-0.5">○○○</span> 您好
+          親愛的 LINE 會員 <span id="user-name" class="font-black border-b-2 border-yellow-300 pb-0.5 tracking-wide">讀取中...</span> 您好
         </h1>
         <h2 class="text-2xl font-black mt-4 leading-tight">請選擇您購買的商品種類</h2>
       </div>
@@ -58,7 +63,7 @@
       <!-- 動態內容區 -->
       <div id="content-area" class="min-h-[200px]">
         <div class="text-center py-16 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-200 mb-8">
-          <p class="text-slate-400 font-medium text-sm">點擊上方圖標<br>查看詳細兌換教學</p>
+          <p class="text-slate-400 font-medium text-sm">點擊上方品牌圖標<br>查看詳細使用說明</p>
         </div>
       </div>
 
@@ -73,7 +78,7 @@
           <li>兌換時再開啟截圖畫面給櫃台人員或機台使用即可。</li>
           <li>請在<span class="text-red-700 font-bold">使用期限內</span>兌換完畢，逾期將失效恕無法補發或退款。</li>
           <li>本憑證每次交易可兌換 5 張，可多次重複使用。</li>
-          <li>若於兌換前查詢或取消使用，序號將被鎖定 5 分鐘，請稍候再試。</li>
+          <li>若於兌換前查詢或取消使用，序號將被鎖定 5 分鐘，請於 5 分鐘後再進行兌換。</li>
         </ul>
       </section>
     </main>
@@ -87,22 +92,25 @@
     // 品牌資料定義
     const brandData = {
       mcd: {
-        title: '麥當勞 使用說明',
-        icon: '🍔',
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
-            <div class="space-y-5 text-[14px] text-slate-600">
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍔 麥當勞兌換方式</h3>
+            <div class="space-y-6 text-[14px] text-slate-600">
               <section>
-                <h4 class="font-bold text-red-600 mb-1 underline underline-offset-4">一、櫃檯/得來速方式</h4>
-                <p>告知店員欲使用電子商品卷，提供截圖掃描條碼即可。</p>
+                <h4 class="font-bold text-red-600 mb-1">一、櫃檯使用：</h4>
+                <p>告知店員欲使用電子商品券，提供截圖給店員掃描。</p>
+              </section>
+              <section>
+                <h4 class="font-bold text-red-600 mb-1">二、得來速使用：</h4>
+                <p>告知點餐對講機欲使用電子券，再到下一窗口提供截圖掃描。</p>
               </section>
               <section class="bg-red-50 p-5 rounded-2xl border border-red-100">
-                <h4 class="font-bold text-red-700 mb-3 flex items-center gap-2"><span>🖥️</span> 二、自助點餐機流程</h4>
-                <div class="space-y-2 pl-6 border-l-2 border-red-200 ml-1">
+                <h4 class="font-bold text-red-700 mb-3">三、自助點餐機流程：</h4>
+                <div class="space-y-2 pl-2 border-l-2 border-red-200">
                   <p>1. 點選開始 → 選擇用餐方式</p>
                   <p>2. 左上角選「<span class="font-bold">電子商品卷</span>」</p>
                   <p>3. 打開截圖放在掃描區感應</p>
-                  <p>4. 確認餐點 (<span class="text-red-600 italic">1次最多5張</span>)</p>
+                  <p>4. 確認餐點 (1次最多5張，可重複多次)</p>
                 </div>
               </section>
             </div>
@@ -110,46 +118,60 @@
         `
       },
       kfc: {
-        title: '肯德基 使用說明',
-        icon: '🍗',
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
-            <div class="space-y-5 text-[14px] text-slate-600">
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍗 肯德基兌換方式</h3>
+            <div class="space-y-6 text-[14px] text-slate-600">
               <section>
-                <h4 class="font-bold text-red-800 mb-2 underline">1. 官網兌換 (推薦)</h4>
-                <p>至肯德基官網【優惠券】區輸入序號。建議使用【預訂快取】專屬通道取餐最快速。</p>
-                <a href="https://www.kfcclub.com.tw/Coupon" target="_blank" class="inline-block mt-2 px-4 py-1.5 bg-red-700 text-white text-xs rounded-full font-bold shadow-sm">前往官網兌換 →</a>
+                <h4 class="font-bold text-red-800 mb-2">1. 肯德基官網兌換：</h4>
+                <p>至官網【優惠券】區輸入序號即可兌換。建議使用【預訂快取】通道取餐不用等。</p>
+                <a href="https://www.kfcclub.com.tw/Coupon" target="_blank" class="inline-block mt-2 text-blue-600 font-bold underline">→ 前往官網兌換</a>
               </section>
               <section>
-                <h4 class="font-bold text-red-800 mb-2 underline">2. 門市/自助機兌換</h4>
-                <p>告知人員選擇「兌換掃券」按鍵。不接受手抄或口說序號。</p>
+                <h4 class="font-bold text-red-800 mb-2">2. 門市兌換：</h4>
+                <p>告知人員選擇「<span class="font-bold">兌換掃券</span>」按鍵核銷。不接受手抄或口說序號。</p>
+                <p class="text-xs text-slate-400 mt-2 italic">※ 自助點餐機亦可直接兌換。</p>
               </section>
-              <a href="https://www.edenred.com.tw/index.php/store/kfc/" target="_blank" class="block text-center py-3 bg-slate-50 text-slate-400 rounded-xl text-[11px] border border-slate-100 italic">查看不適用門市清單</a>
+              <section class="bg-slate-50 p-4 rounded-xl text-xs">
+                <p class="text-slate-500 font-medium leading-relaxed">⚠️ 外送服務、點餐車道不適用。部分門市不參與兌換。</p>
+              </section>
             </div>
           </div>
         `
       },
       pzh: {
-        title: '必勝客 使用說明',
-        icon: '🍕',
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
-            <div class="space-y-4 text-[14px] text-slate-600">
-              <p>● <span class="font-bold text-orange-600">官網/APP：</span>點選「優惠券兌換」→ 輸入 <span class="font-mono bg-slate-100 px-1 border border-slate-200">VP</span> 開頭 20 碼序號。</p>
-              <p>● <span class="font-bold text-orange-600">門市現場：</span>告知人員選「兌換掃券」按鍵並出示截圖。</p>
-              <p>● <span class="font-bold text-orange-600">電話訂餐：</span>撥打 412-9889 報 20 碼序號。取餐時出示截圖。</p>
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">🍕 必勝客兌換方式</h3>
+            <div class="space-y-5 text-[14px] text-slate-600">
+              <section>
+                <h4 class="font-bold text-orange-600 mb-1">● 官網及APP兌換：</h4>
+                <p>左上角選「優惠券兌換」→「輸入序號」，輸入 <span class="font-mono bg-slate-100 px-1 border">VP</span> 開頭 20 碼序號。</p>
+              </section>
+              <section>
+                <h4 class="font-bold text-orange-600 mb-1">● 門市現場兌換：</h4>
+                <p>結帳前出示截圖，告知人員選擇「兌換掃券」按鍵。</p>
+              </section>
+              <section>
+                <h4 class="font-bold text-orange-600 mb-1">● 電話訂餐：</h4>
+                <p>撥打 412-9889，告知使用電子禮券並報完整 20 碼序號。</p>
+              </section>
             </div>
           </div>
         `
       },
       sbx: {
-        title: '星巴克 使用說明',
-        icon: '☕',
         html: `
           <div class="bg-white rounded-[2.5rem] p-7 shadow-sm border border-slate-100 mb-6 fade-in">
+            <h3 class="text-lg font-black text-slate-800 mb-5 flex items-center gap-2">☕ 星巴克兌換方式</h3>
             <div class="space-y-4 text-[14px] text-slate-600">
-              <p>● <span class="font-bold text-green-800">櫃檯使用：</span>告知店員欲使用電子商品卷，提供截圖掃描條碼即可。</p>
-              <p class="bg-green-50 p-4 rounded-xl text-[12px] text-green-700 italic border border-green-100 leading-relaxed">※ 兌換前請務必確認您的商品規格(冰/熱、容量)是否與券面相符。</p>
+              <section>
+                <h4 class="font-bold text-green-800 mb-2 underline underline-offset-4">櫃檯直接使用：</h4>
+                <p class="leading-relaxed">告知店員欲使用電子商品券，提供截圖條碼給店員掃描核銷即可。</p>
+              </section>
+              <div class="bg-green-50 p-4 rounded-xl border border-green-100 mt-4">
+                <p class="text-xs text-green-700">※ 提醒您：電子券僅限於櫃台兌換，暫不支援線上點餐系統。</p>
+              </div>
             </div>
           </div>
         `
@@ -158,29 +180,37 @@
 
     // 切換品牌邏輯
     function selectBrand(id) {
-      // 更新按鈕樣式
-      document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('active', 'border-red-500', 'ring-4', 'ring-red-100'));
+      document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('active', 'ring-4', 'ring-red-100', 'border-red-500'));
       const activeBtn = document.getElementById('btn-' + id);
-      activeBtn.classList.add('active', 'border-red-500', 'ring-4', 'ring-red-100');
+      activeBtn.classList.add('active', 'ring-4', 'ring-red-100', 'border-red-500');
 
-      // 更新內容
       const contentArea = document.getElementById('content-area');
       contentArea.innerHTML = brandData[id].html;
       
-      // 平滑滾動到內容區
       window.scrollTo({ top: activeBtn.offsetTop - 20, behavior: 'smooth' });
     }
 
     // 初始化 LIFF
     async function initLiff() {
+      const nameEl = document.getElementById('user-name');
       try {
-        await liff.init({ liffId: 'YOUR_LIFF_ID' }); // 之後可自行填入 ID
+        // 請確保這裡填入您正確的 LIFF ID
+        await liff.init({ liffId: '2006813350-B66g1l4n' }); 
+        
         if (liff.isLoggedIn()) {
           const profile = await liff.getProfile();
-          document.getElementById('user-name').innerText = profile.displayName;
+          nameEl.innerText = profile.displayName;
+        } else {
+          // 如果沒登入且是在 LINE 內部，嘗試登入
+          if (liff.isInClient()) {
+            liff.login();
+          } else {
+            nameEl.innerText = "訪客";
+          }
         }
       } catch (e) {
-        console.log("LIFF initialization failed, maybe not in LINE browser.");
+        console.error("LIFF Init Error:", e);
+        nameEl.innerText = "訪客";
       }
     }
 
